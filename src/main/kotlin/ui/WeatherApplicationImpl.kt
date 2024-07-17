@@ -19,14 +19,43 @@ class WeatherApplicationImpl : WeatherApplication {
                 return
             }
 
-            command.equals("history", ignoreCase = true) -> {
+            command.contains("history") -> {
                 runBlocking {
-                    val history = historyStorage.getSearchHistory()
-                    history.forEach { (query, result) ->
-                        println("\t$query, Result: ${result.location.localtime} , ${result.current.condition.text} - code: ${result.current.condition.code}")
+                    if (command.startsWith("history")) {
+                        runBlocking {
+                            val parts = command.split(" ")
+                            val history = historyStorage.getSearchHistory()
+
+                            if (parts.size == 1) {
+                                // Show all queries
+                                history.forEach { (query, result) ->
+                                    println("\t$query, Result: ${result.location.name}, ${result.location.localtime}, ${result.current.condition.text} - code: ${result.current.condition.code}")
+                                }
+                            } else {
+                                // Show specific query
+                                val query = parts[1]
+                                val filteredHistory = history.filter { (storedQuery, _) ->
+                                    storedQuery == query
+                                }
+
+                                if (filteredHistory.isNotEmpty()) {
+                                    filteredHistory.forEach { (storedQuery, result) ->
+                                        println("\t$storedQuery, Result: ${result.location.name}, ${result.location.localtime}, ${result.current.condition.text} - code: ${result.current.condition.code}")
+                                    }
+                                } else {
+                                    println("No history found for query: $query")
+                                }
+                            }
+                        }
                     }
+
+//                    val history = historyStorage.getSearchHistory()
+//                    history.forEach { (query, result) ->
+//                        println("\t$query, Result: ${result.location.name} ,${result.location.localtime} , ${result.current.condition.text} - code: ${result.current.condition.code}")
+//                    }
                 }
                 println(lineBreaker)
+
             }
 
             command.isNotBlank() -> {
