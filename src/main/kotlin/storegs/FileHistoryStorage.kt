@@ -10,11 +10,14 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 class FileHistoryStorage(private val filePath: String) : HistoryStorage {
+    // can json be DI
+    // dispacture also can be DI
     private val json = Json { ignoreUnknownKeys = true }
     private val lock = ReentrantLock()
     private val file = File(filePath)
     private var cache: MutableList<Pair<String, WeatherInfo>> = mutableListOf()
 
+    // for pre-start init is not recommended do in like start method
     init {
         if (!file.exists()) {
             file.createNewFile()
@@ -26,7 +29,10 @@ class FileHistoryStorage(private val filePath: String) : HistoryStorage {
     override suspend fun saveSearch(query: String, result: WeatherInfo) {
         lock.withLock {
             cache.add(query to result)
-            saveToFileAsync()
+            // Async si nor good place.
+//            saveToFileAsync()
+            writeHistoryToFile()
+
         }
     }
 
@@ -58,8 +64,9 @@ class FileHistoryStorage(private val filePath: String) : HistoryStorage {
     }
 
     private fun writeHistoryToFile() {
-        lock.withLock {
+        // nested lock is not good   -->  deadLock
+        //        lock.withLock {
             file.writeText(json.encodeToString(cache))
-        }
+//        }
     }
 }

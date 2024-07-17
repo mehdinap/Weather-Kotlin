@@ -9,6 +9,8 @@ fun main() {
         modules(appModule)
     }
 
+    // injecting WeatherApplicationImpl to main.
+
     val weatherApp: WeatherApplication = WeatherApplicationImpl()
     while (true) {
         println("Enter city name or latitude,longitude (or type 'exit' to quit, 'history' to view search history):")
