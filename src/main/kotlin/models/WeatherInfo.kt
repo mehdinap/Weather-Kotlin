@@ -1,9 +1,6 @@
 package models
 
 import kotlinx.serialization.Serializable
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Serializable
 data class WeatherInfo(
@@ -14,14 +11,13 @@ data class WeatherInfo(
 @Serializable
 data class Location(
     val name: String,
-    val request_time: String = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(LocalDateTime.now())
 //    val region: String,
 //    val country: String,
 //    val lat: Double,
 //    val lon: Double,
 //    val tz_id: String,
 //    val localtime_epoch: Long,
-//    val localtime: String
+    val localtime: String
 )
 
 @Serializable
