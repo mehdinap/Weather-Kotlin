@@ -10,7 +10,8 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
 class WeatherServiceImpl : WeatherService {
-
+        // DI for HttpClient or constructor
+        // default url CONTENT
     private val client = HttpClient {
         install(ContentNegotiation) {
             json(Json { ignoreUnknownKeys = true })
@@ -22,13 +23,13 @@ class WeatherServiceImpl : WeatherService {
             val response: HttpResponse = client.get(Api.BASE_URL) {
                 parameter(Api.DEFAULT_FIELDS, cityName)
                 parameter("key", Api.API_KEY)
-            }
+            }       // status range 200 - ...
             if (response.status.value == 200) {
                 val weatherInfo = response.body<WeatherInfo>()
                 NetworkResult.Success(weatherInfo)
             } else {
                 NetworkResult.Error(Exception("Failed to fetch weather data"))
-            }
+            }   // dispacture ktor main-safe 4 form.
         } catch (e: Exception) {
             NetworkResult.Error(e)
         }

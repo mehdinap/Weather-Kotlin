@@ -58,8 +58,16 @@ class WeatherApplicationImpl : WeatherApplication {
 
             }
 
+            // non relation models is defines in any pattern package.
+            // storage -> data
+            // models break.
+
+
             command.isNotBlank() -> {
                 runBlocking {
+                    // default is good for loop form by overhead and short time suspend
+                    // i/o is good for
+                    // Dispatchers for DI
                     val loadingJob = launch(Dispatchers.Default) {
                         print("loading ")
                         while (isActive) {
